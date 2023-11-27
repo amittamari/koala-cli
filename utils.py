@@ -1,0 +1,9 @@
+#!/usr/bin/env python3
+
+from pathlib import Path
+
+def kvim_dir() -> Path:
+    return Path.home() / Path(".local/share/nvim/lazy/KoalaVim/")
+
+def config_dir() -> Path:
+    return Path.home() / Path(".config/nvim/")
