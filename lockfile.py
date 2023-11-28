@@ -11,7 +11,7 @@ from rich.prompt import Confirm
 
 from utils import kvim_dir, config_dir
 
-app = typer.Typer(name="koala-cli", no_args_is_help=True)
+app = typer.Typer(no_args_is_help=True, help="Manage plugin's lockfile")
 
 @app.command()
 def diff():

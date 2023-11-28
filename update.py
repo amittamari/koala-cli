@@ -2,7 +2,7 @@
 
 import typer
 
-app = typer.Typer(name="koala-cli", no_args_is_help=True)
+app = typer.Typer(no_args_is_help=True, help='Updata KoalaVim and dependencies')
 
 @app.command()
 def update():
