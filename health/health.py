@@ -55,5 +55,29 @@ def ripgrep() -> HealthableVersion:
 
     return HealthableVersion(m.group(1), commit=None)
 
+@healthable(HealthGroup.dependencies)
+def fd() -> HealthableVersion:
+    output = subprocess.check_output(['fd', '--version']).decode()
+    m = regex.match(r'fd ([\d\.]*)', output)
+
+    return HealthableVersion(m.group(1), commit=None)
+
+@healthable(HealthGroup.dependencies)
+def fzf() -> HealthableVersion:
+    output = subprocess.check_output(['fzf', '--version']).decode()
+    m = regex.match(r'([\d\.]*) \((.*)\)', output)
+
+    return HealthableVersion(m.group(1), m.group(2))
+
+@healthable(HealthGroup.dependencies)
+def nerd_font() -> HealthableVersion:
+    output = subprocess.check_output(['fc-list']).splitlines()
+    for line in output:
+        if b"Nerd Font" in line:
+            return HealthableVersion()
+
+    # TODO better exception group
+    raise BaseException("Nerd Font not found")
+
 if __name__ == '__main__':
     app()
