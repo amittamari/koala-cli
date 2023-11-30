@@ -48,5 +48,12 @@ def nvim() -> HealthableVersion:
 
     return HealthableVersion(m.group(1), m.group(2))
 
+@healthable(HealthGroup.dependencies)
+def ripgrep() -> HealthableVersion:
+    output = subprocess.check_output(['rg', '--version']).splitlines()
+    m = regex.match(r'ripgrep ([\d\.]*)', output[0].decode())
+
+    return HealthableVersion(m.group(1), commit=None)
+
 if __name__ == '__main__':
     app()
