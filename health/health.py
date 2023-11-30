@@ -10,7 +10,7 @@ from rich.console import Console
 from rich.table import Table
 
 from .healthable import HEALTHABLES, healthable
-from .types import HealthAble, HealthableVersion, HealthGroup
+from .types import Healthable, HealthableVersion, HealthGroup
 
 app = typer.Typer(help="Check KoalaVim's health")
 
@@ -18,7 +18,7 @@ app = typer.Typer(help="Check KoalaVim's health")
 def health():
     # TODO: show lockfile status
 
-    results: Dict[HealthGroup, List[Tuple[HealthAble, HealthableVersion]]] = defaultdict(list)
+    results: Dict[HealthGroup, List[Tuple[Healthable, HealthableVersion]]] = defaultdict(list)
 
     for group, healthables in HEALTHABLES.items():
         for h in healthables:
@@ -28,7 +28,7 @@ def health():
     for group, group_results in results.items():
         print_group_results(group, group_results)
 
-def print_group_results(group: HealthGroup, results: List[Tuple[HealthAble, HealthableVersion]]):
+def print_group_results(group: HealthGroup, results: List[Tuple[Healthable, HealthableVersion]]):
     table = Table(title=group.name)
     table.add_column('Entity', style='medium_purple')
     table.add_column('Result', style='green')

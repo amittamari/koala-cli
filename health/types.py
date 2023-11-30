@@ -24,7 +24,7 @@ class HealthableVersion(NamedTuple):
 
 HealthDecorator = Callable[[], HealthableVersion]
 
-class HealthAble(NamedTuple):
+class Healthable(NamedTuple):
     name: str
     check_health: HealthDecorator
 
