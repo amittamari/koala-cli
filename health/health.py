@@ -44,7 +44,7 @@ def print_group_results(group: HealthGroup, results: List[Tuple[Healthable, Heal
 @healthable(HealthGroup.core)
 def nvim() -> HealthableVersion:
     output = subprocess.check_output(['nvim', '--version']).splitlines()
-    m = regex.match(r'NVIM v([\d\.]*).*?([a-e0-9]{7})', output[0].decode())
+    m = regex.match(r'NVIM v([\d\.]*)(?:.*?([a-e0-9]{7}))?', output[0].decode())
 
     return HealthableVersion(m.group(1), m.group(2))
 
