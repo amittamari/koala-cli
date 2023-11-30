@@ -6,8 +6,8 @@ from enum import Enum
 SemVer = str
 
 class HealthableVersion(NamedTuple):
-    ver: Optional[SemVer]
-    commit: Optional[str]
+    ver: Optional[SemVer] = None
+    commit: Optional[str] = None
     error: Optional[str] = None
 
     @staticmethod
@@ -15,6 +15,9 @@ class HealthableVersion(NamedTuple):
         return HealthableVersion(ver=None, commit=None, error=str(e))
 
     def __str__(self):
+        if self.ver is None and self.commit is None and self.error is None:
+            return 'Healthy'
+
         if self.error is not None:
             return f'[bold red]{self.error}'
 
