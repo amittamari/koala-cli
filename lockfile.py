@@ -8,6 +8,7 @@ from pathlib import Path
 from rich.console import Console
 from rich.table import Table
 from rich.prompt import Confirm
+from rich.style import Style
 
 from utils import kvim_dir, config_dir
 
@@ -27,6 +28,8 @@ def diff():
     table.add_column('KoalaVim', style="cyan")
 
     for plugin, kvim_commit in kvim_lockfile.items():
+        if plugin == 'KoalaVim':
+            continue # The user can't never be in the correct commit
         user_commit = user_lockfile[plugin]
         if kvim_commit != user_commit:
             table.add_row(plugin, kvim_commit, user_commit)
@@ -40,6 +43,10 @@ def overwrite():
     Overwrite user lock-file with Koala's lockfile
     """
     _overwrite_file(kvim_lockfile(), user_lockfile())
+
+    console = Console()
+    console.print("")
+    console.print(" >> Run `:Lazy restore` in order to sync plugins to the lock file", style=Style(color="bright_yellow", bold=True))
 
 @app.command()
 def set_koalavim():
