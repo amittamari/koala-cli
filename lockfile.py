@@ -30,9 +30,9 @@ def diff():
     for plugin, kvim_commit in kvim_lockfile.items():
         if plugin == 'KoalaVim':
             continue # The user can't never be in the correct commit
-        user_commit = user_lockfile[plugin]
+        user_commit = user_lockfile.get(plugin, "[grey35]N/A")
         if kvim_commit != user_commit:
-            table.add_row(plugin, kvim_commit, user_commit)
+            table.add_row(plugin, user_commit, kvim_commit)
 
     console = Console()
     console.print(table)
