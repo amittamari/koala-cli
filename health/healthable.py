@@ -13,7 +13,7 @@ def healthable(group: HealthGroup):
             # Translate exceptions as result errors
             try:
                 return func()
-            except Exception as e:
+            except OSError as e:
                 return HealthableVersion.from_exception(e)
 
         HEALTHABLES[group].append(Healthable(func.__name__, _wrapper))
