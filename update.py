@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
 
-import subprocess
 import regex
 from shutil import copy2
 from datetime import datetime
