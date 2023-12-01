@@ -55,9 +55,10 @@ def set_koalavim():
     """
     _overwrite_file(user_lockfile(), kvim_lockfile())
 
-def _overwrite_file(src, dst):
-    if not Confirm.ask(f"Confirm overwrite of '{dst}'"):
-        return
+def _overwrite_file(src, dst, interactive=True):
+    if interactive:
+        if not Confirm.ask(f"Confirm overwrite of '{dst}'"):
+            return
 
     shutil.copy2(src, dst)
     print(f'{src} -> {dst}')
