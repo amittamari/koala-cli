@@ -1,5 +1,3 @@
-#!/usr/bin/env python3
-
 import typer
 import json
 import shutil
@@ -10,7 +8,7 @@ from rich.table import Table
 from rich.prompt import Confirm
 from rich.style import Style
 
-from utils import kvim_dir, config_dir
+from koala_cli.utils import kvim_dir, config_dir
 
 app = typer.Typer(no_args_is_help=True, help="Manage plugin's lockfile")
 
@@ -30,7 +28,7 @@ def diff():
     for plugin, kvim_commit in kvim_lockfile.items():
         if plugin == 'KoalaVim':
             continue # The user can't never be in the correct commit
-        user_commit = user_lockfile[plugin]
+        user_commit = user_lockfile.get(plugin)
         if kvim_commit != user_commit:
             table.add_row(plugin, kvim_commit, user_commit)
 
@@ -79,6 +77,3 @@ def read_lockfile(path: Path) -> dict:
             plugin_to_commit[plugin] = info['commit']
 
         return plugin_to_commit
-
-if __name__ == '__main__':
-    app()

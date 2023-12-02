@@ -1,0 +1,17 @@
+[tool.poetry]
+name = "koala-cli"
+version = "0.1.0"
+description = "Tool to update, install and healthcheck KoalaVim"
+authors = ["Ofir Gal <ofir@gal.software>", "Michael Shustin <michaelshustin@gmail.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.8"
+typer = {extras = ["all"], version = "^0.9.0"}
+
+[tool.poetry.scripts]
+koala = "koala_cli.__main__:app"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
