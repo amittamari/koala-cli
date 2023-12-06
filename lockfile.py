@@ -11,6 +11,7 @@ from rich.prompt import Confirm
 from rich.style import Style
 
 from utils import kvim_dir, config_dir
+from typing import Annotated
 
 app = typer.Typer(no_args_is_help=True, help="Manage plugin's lockfile")
 
@@ -37,31 +38,52 @@ def diff():
     console = Console()
     console.print(table)
 
+Yes = Annotated[bool, typer.Option("--yes", "-y", help="Don't ask for confirmation")]
+
 @app.command()
-def overwrite():
+def overwrite(yes: Yes = False):
     """
     Overwrite user lock-file with Koala's lockfile
     """
-    _overwrite_file(kvim_lockfile(), user_lockfile())
+    _overwrite_lock_file(kvim_lockfile(), user_lockfile(), yes)
 
     console = Console()
     console.print("")
     console.print(" >> Run `:Lazy restore` in order to sync plugins to the lock file", style=Style(color="bright_yellow", bold=True))
 
 @app.command()
-def set_koalavim():
+def set_koalavim(yes: Yes = False):
     """
     Overwrite Koala's lock-file with user lockfile (used by devs)
     """
-    _overwrite_file(user_lockfile(), kvim_lockfile())
+    _overwrite_lock_file(user_lockfile(), kvim_lockfile(), yes)
 
-def _overwrite_file(src, dst, interactive=True):
-    if interactive:
-        if not Confirm.ask(f"Confirm overwrite of '{dst}'"):
-            return
+def _overwrite_lock_file(src, dst, yes=False):
+    if not yes and not Confirm.ask(f"Confirm overwrite of '{dst}'"):
+        return
 
-    shutil.copy2(src, dst)
+    with open(src, 'r') as f:
+        content: dict = json.load(f)
+        content.pop("KoalaVim", None) # Don't override KoalaVim
+
+        with open(dst, 'w') as out:
+            out.write(_format_lazylock(content))
+
     print(f'{src} -> {dst}')
+
+def _format_lazylock(content: dict) -> str:
+    lines = ["{"]
+    # json.dumps(content, out, indent=2)
+    for plugin, plugin_content in content.items():
+        plugin_content = json.dumps(plugin_content)
+        plugin_content = plugin_content.replace('{', '{ ')
+        plugin_content = plugin_content.replace('}', ' }')
+
+        lines.append(f'  "{plugin}": {plugin_content},')
+
+    lines.append("}")
+
+    return '\n'.join(lines)
 
 LOCK_FILE = "lazy-lock.json"
 

@@ -7,7 +7,7 @@ from rich.console import Console
 from rich.style import Style
 from typing_extensions import Annotated
 
-from lockfile import kvim_lockfile, user_lockfile, _overwrite_file
+from lockfile import kvim_lockfile, user_lockfile, _overwrite_lock_file
 from utils import data_dir, kvim_repo
 
 import typer
@@ -38,7 +38,7 @@ def update(
 
     backup_current_lockfile()
     console.print("Overwriting lockfile", style=Style(color="green"))
-    _overwrite_file(kvim_lockfile(), user_lockfile(), interactive=False)
+    _overwrite_lock_file(kvim_lockfile(), user_lockfile(), yes=True)
 
     console.print("")
     console.print(" >> Run `:Lazy restore` in order to sync plugins to the lock file", style=Style(color="bright_yellow", bold=True))
