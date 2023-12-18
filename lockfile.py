@@ -81,6 +81,9 @@ def _format_lazylock(content: dict) -> str:
 
         lines.append(f'  "{plugin}": {plugin_content},')
 
+    # Remove trailing comma after last plugin
+    lines[-1] = lines[-1][:-1]
+
     lines.append("}")
 
     return '\n'.join(lines)
