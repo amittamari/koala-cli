@@ -17,14 +17,16 @@ app = typer.Typer(help='Update KoalaVim and dependencies')
 @app.callback(invoke_without_command=True)
 def update(
     target: Annotated[str, typer.Option(help="Target commit/branch of KoalaVim for update/downgrade")] = "master",
-    remote: Annotated[str, typer.Option(help="Remote target")] = "origin"
+    remote: Annotated[str, typer.Option(help="Remote target")] = "origin",
+    force: Annotated[bool, typer.Option(help="Force update (ignore dirty KoalaVim dir)")] = False
 ):
     console = Console()
 
     repo = kvim_repo()
     if repo.is_dirty():
         console.print("Local KoalaVim dir is dirty", style=Style(color="yellow"))
-        return
+        if not force:
+            return
 
     repo.remote(remote).fetch()
 
