@@ -36,7 +36,9 @@ def diff():
     console = Console()
     console.print(table)
 
+
 Yes = Annotated[bool, typer.Option("--yes", "-y", help="Don't ask for confirmation")]
+
 
 @app.command()
 def overwrite(yes: Yes = False):
@@ -49,12 +51,14 @@ def overwrite(yes: Yes = False):
     console.print("")
     console.print(" >> Run `:Lazy restore` in order to sync plugins to the lock file", style=Style(color="bright_yellow", bold=True))
 
+
 @app.command()
 def set_koalavim(yes: Yes = False):
     """
     Overwrite Koala's lock-file with user lockfile (used by devs)
     """
     _overwrite_lock_file(user_lockfile(), kvim_lockfile(), yes)
+
 
 def _overwrite_lock_file(src, dst, yes=False):
     if not yes and not Confirm.ask(f"Confirm overwrite of '{dst}'"):
@@ -68,6 +72,7 @@ def _overwrite_lock_file(src, dst, yes=False):
             out.write(_format_lazylock(content))
 
     print(f'{src} -> {dst}')
+
 
 def _format_lazylock(content: dict) -> str:
     lines = ["{"]
@@ -85,6 +90,7 @@ def _format_lazylock(content: dict) -> str:
     lines.append("}")
 
     return '\n'.join(lines)
+
 
 LOCK_FILE = "lazy-lock.json"
 
