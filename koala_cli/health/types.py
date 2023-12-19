@@ -5,6 +5,7 @@ from enum import Enum
 
 SemVer = str
 
+
 class HealthableVersion(NamedTuple):
     ver: Optional[SemVer] = None
     commit: Optional[str] = None
@@ -25,10 +26,13 @@ class HealthableVersion(NamedTuple):
 
         return f'{self.ver or ""} {self.commit or ""}'
 
+
 HealthDecorator = Callable[[], HealthableVersion]
+
 
 class Healthable(NamedTuple):
     name: str
     check_health: HealthDecorator
+
 
 HealthGroup = Enum('HealthGroup', ['core', 'dependencies'])

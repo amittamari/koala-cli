@@ -4,7 +4,7 @@ import subprocess
 from collections import defaultdict
 from typing import Dict, List, Tuple
 
-import regex
+import re
 import typer
 from rich.console import Console
 from rich.table import Table
@@ -13,6 +13,7 @@ from .healthable import HEALTHABLES, healthable
 from .types import Healthable, HealthableVersion, HealthGroup
 
 app = typer.Typer(help="Check KoalaVim's health")
+
 
 @app.callback(invoke_without_command=True)
 def health():
@@ -28,6 +29,7 @@ def health():
     for group, group_results in results.items():
         print_group_results(group, group_results)
 
+
 def print_group_results(group: HealthGroup, results: List[Tuple[Healthable, HealthableVersion]]):
     table = Table(title=group.name)
     table.add_column('Entity', style='medium_purple')
@@ -39,45 +41,48 @@ def print_group_results(group: HealthGroup, results: List[Tuple[Healthable, Heal
     console.print(table)
 
 
-######################################3
-
 @healthable(HealthGroup.core)
 def nvim() -> HealthableVersion:
     output = subprocess.check_output(['nvim', '--version']).splitlines()
-    m = regex.match(r'NVIM v([\d\.]*)(?:.*?([a-e0-9]{7}))?', output[0].decode())
+    m = re.match(r'NVIM v([\d\.]*)(?:.*?([a-e0-9]{7}))?', output[0].decode())
 
     return HealthableVersion(m.group(1), m.group(2))
+
 
 @healthable(HealthGroup.dependencies)
 def ripgrep() -> HealthableVersion:
     output = subprocess.check_output(['rg', '--version']).splitlines()
-    m = regex.match(r'ripgrep ([\d\.]*)', output[0].decode())
+    m = re.match(r'ripgrep ([\d\.]*)', output[0].decode())
 
     return HealthableVersion(m.group(1), commit=None)
+
 
 @healthable(HealthGroup.dependencies)
 def fd() -> HealthableVersion:
     output = subprocess.check_output(['fd', '--version']).decode()
-    m = regex.match(r'fd ([\d\.]*)', output)
+    m = re.match(r'fd ([\d\.]*)', output)
 
     return HealthableVersion(m.group(1), commit=None)
+
 
 @healthable(HealthGroup.dependencies)
 def fzf() -> HealthableVersion:
     output = subprocess.check_output(['fzf', '--version']).decode()
-    m = regex.match(r'([\d\.]*) \((.*)\)', output)
+    m = re.match(r'([\d\.]*) \((.*)\)', output)
 
     return HealthableVersion(m.group(1), m.group(2))
 
+
 @healthable(HealthGroup.dependencies)
 def nerd_font() -> HealthableVersion:
-    output = subprocess.check_output(['fc-list']).splitlines()
+    output = subprocess.check_output(['fc-list']).decode().splitlines()
     for line in output:
-        if b"Nerd Font" in line:
+        if 'Nerd Font' in line:
             return HealthableVersion()
 
     # TODO better exception group
-    raise BaseException("Nerd Font not found")
+    raise Exception("Nerd Font not found")
+
 
 if __name__ == '__main__':
     app()

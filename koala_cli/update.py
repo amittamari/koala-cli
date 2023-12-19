@@ -1,18 +1,19 @@
 #!/usr/bin/env python3
 
-import regex
+import re
 from shutil import copy2
 from datetime import datetime
 from rich.console import Console
 from rich.style import Style
 from typing_extensions import Annotated
 
-from lockfile import kvim_lockfile, user_lockfile, _overwrite_lock_file
-from utils import data_dir, kvim_repo
+from koala_cli.lockfile import kvim_lockfile, user_lockfile, _overwrite_lock_file
+from koala_cli.utils import data_dir, kvim_repo
 
 import typer
 
 app = typer.Typer(help='Update KoalaVim and dependencies')
+
 
 @app.callback(invoke_without_command=True)
 def update(
@@ -31,7 +32,7 @@ def update(
     repo.remote(remote).fetch()
 
     # check if target is commit
-    m = regex.match(r'([a-e0-9]{4,40})', target)
+    m = re.match(r'([a-e0-9]{4,40})', target)
     if m is None:
         target = remote + "/" + target
 
@@ -45,6 +46,7 @@ def update(
     console.print("")
     console.print(" >> Run `:Lazy restore` in order to sync plugins to the lock file", style=Style(color="bright_yellow", bold=True))
 
+
 def backup_current_lockfile():
     console = Console()
     now = datetime.now().strftime('%d-%m-%y_%H:%M:%S')
@@ -55,6 +57,3 @@ def backup_current_lockfile():
 
     console.print(f"Backing up current lockfile to: [yellow]'{dst}'", style=Style(color="green"))
     copy2(src, dst)
-
-if __name__ == '__main__':
-    app()

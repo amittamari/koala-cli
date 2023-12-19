@@ -1,8 +1,6 @@
-#!/usr/bin/env python3
-
 import typer
 import json
-import shutil
+from typing_extensions import Annotated
 from pathlib import Path
 
 from rich.console import Console
@@ -10,10 +8,10 @@ from rich.table import Table
 from rich.prompt import Confirm
 from rich.style import Style
 
-from utils import kvim_dir, config_dir
-from typing import Annotated
+from koala_cli.utils import kvim_dir, config_dir
 
 app = typer.Typer(no_args_is_help=True, help="Manage plugin's lockfile")
+
 
 @app.command()
 def diff():
@@ -38,7 +36,9 @@ def diff():
     console = Console()
     console.print(table)
 
+
 Yes = Annotated[bool, typer.Option("--yes", "-y", help="Don't ask for confirmation")]
+
 
 @app.command()
 def overwrite(yes: Yes = False):
@@ -51,12 +51,14 @@ def overwrite(yes: Yes = False):
     console.print("")
     console.print(" >> Run `:Lazy restore` in order to sync plugins to the lock file", style=Style(color="bright_yellow", bold=True))
 
+
 @app.command()
 def set_koalavim(yes: Yes = False):
     """
     Overwrite Koala's lock-file with user lockfile (used by devs)
     """
     _overwrite_lock_file(user_lockfile(), kvim_lockfile(), yes)
+
 
 def _overwrite_lock_file(src, dst, yes=False):
     if not yes and not Confirm.ask(f"Confirm overwrite of '{dst}'"):
@@ -70,6 +72,7 @@ def _overwrite_lock_file(src, dst, yes=False):
             out.write(_format_lazylock(content))
 
     print(f'{src} -> {dst}')
+
 
 def _format_lazylock(content: dict) -> str:
     lines = ["{"]
@@ -88,13 +91,17 @@ def _format_lazylock(content: dict) -> str:
 
     return '\n'.join(lines)
 
+
 LOCK_FILE = "lazy-lock.json"
+
 
 def kvim_lockfile() -> Path:
     return kvim_dir() / LOCK_FILE
 
+
 def user_lockfile() -> Path:
     return config_dir() / LOCK_FILE
+
 
 def read_lockfile(path: Path) -> dict:
     with open(path / LOCK_FILE, 'r') as f:
@@ -105,6 +112,3 @@ def read_lockfile(path: Path) -> dict:
             plugin_to_commit[plugin] = info['commit']
 
         return plugin_to_commit
-
-if __name__ == '__main__':
-    app()
