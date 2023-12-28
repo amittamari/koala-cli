@@ -17,9 +17,13 @@ app = typer.Typer(help='Update KoalaVim and dependencies')
 
 @app.callback(invoke_without_command=True)
 def update(
-    target: Annotated[str, typer.Option(help="Target commit/branch of KoalaVim for update/downgrade")] = "master",
+    target: Annotated[
+        str, typer.Option(help="Target commit/branch of KoalaVim for update/downgrade")
+    ] = "master",
     remote: Annotated[str, typer.Option(help="Remote target")] = "origin",
-    force: Annotated[bool, typer.Option(help="Force update (ignore dirty KoalaVim dir)")] = False
+    force: Annotated[
+        bool, typer.Option(help="Force update (ignore dirty KoalaVim dir)")
+    ] = False,
 ):
     console = Console()
 
@@ -44,7 +48,10 @@ def update(
     _overwrite_lock_file(kvim_lockfile(), user_lockfile(), yes=True)
 
     console.print("")
-    console.print(" >> Run `:Lazy restore` in order to sync plugins to the lock file", style=Style(color="bright_yellow", bold=True))
+    console.print(
+        " >> Run `:Lazy restore` in order to sync plugins to the lock file",
+        style=Style(color="bright_yellow", bold=True),
+    )
 
 
 def backup_current_lockfile():
@@ -55,5 +62,7 @@ def backup_current_lockfile():
     src = user_lockfile()
     dst = data_dir() / file_name
 
-    console.print(f"Backing up current lockfile to: [yellow]'{dst}'", style=Style(color="green"))
+    console.print(
+        f"Backing up current lockfile to: [yellow]'{dst}'", style=Style(color="green")
+    )
     copy2(src, dst)

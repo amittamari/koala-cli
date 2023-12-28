@@ -28,7 +28,7 @@ def diff():
 
     for plugin, kvim_commit in kvim_lockfile.items():
         if plugin == 'KoalaVim':
-            continue # The user can't never be in the correct commit
+            continue  # The user can't never be in the correct commit
         user_commit = user_lockfile.get(plugin, "[grey35]N/A")
         if kvim_commit != user_commit:
             table.add_row(plugin, user_commit, kvim_commit)
@@ -49,7 +49,10 @@ def overwrite(yes: Yes = False):
 
     console = Console()
     console.print("")
-    console.print(" >> Run `:Lazy restore` in order to sync plugins to the lock file", style=Style(color="bright_yellow", bold=True))
+    console.print(
+        " >> Run `:Lazy restore` in order to sync plugins to the lock file",
+        style=Style(color="bright_yellow", bold=True),
+    )
 
 
 @app.command()
@@ -66,7 +69,7 @@ def _overwrite_lock_file(src, dst, yes=False):
 
     with open(src, 'r') as f:
         content: dict = json.load(f)
-        content.pop("KoalaVim", None) # Don't override KoalaVim
+        content.pop("KoalaVim", None)  # Don't override KoalaVim
 
         with open(dst, 'w') as out:
             out.write(_format_lazylock(content))

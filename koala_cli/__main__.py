@@ -3,7 +3,9 @@ import typer
 from koala_cli import install, update, lockfile, health
 from koala_cli.utils import data_dir
 
-app = typer.Typer(name='koala', no_args_is_help=True, help='CLI tool to manage KoalaVim')
+app = typer.Typer(
+    name='koala', no_args_is_help=True, help='CLI tool to manage KoalaVim'
+)
 app.add_typer(health.app, name='health')
 app.add_typer(install.app, name='install')
 app.add_typer(lockfile.app, name='lockfile')

@@ -19,7 +19,9 @@ app = typer.Typer(help="Check KoalaVim's health")
 def health():
     # TODO: show lockfile status
 
-    results: Dict[HealthGroup, List[Tuple[Healthable, HealthableVersion]]] = defaultdict(list)
+    results: Dict[
+        HealthGroup, List[Tuple[Healthable, HealthableVersion]]
+    ] = defaultdict(list)
 
     for group, healthables in HEALTHABLES.items():
         for h in healthables:
@@ -30,7 +32,9 @@ def health():
         print_group_results(group, group_results)
 
 
-def print_group_results(group: HealthGroup, results: List[Tuple[Healthable, HealthableVersion]]):
+def print_group_results(
+    group: HealthGroup, results: List[Tuple[Healthable, HealthableVersion]]
+):
     table = Table(title=group.name)
     table.add_column('Entity', style='medium_purple')
     table.add_column('Result', style='green')

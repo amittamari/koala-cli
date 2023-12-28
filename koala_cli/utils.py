@@ -5,7 +5,7 @@ from git import Repo
 
 def kvim_dir() -> Path:
     # TODO: [windows]
-    return Path.home() / '.local' / 'share' / 'nvim'/ 'lazy' / 'KoalaVim'
+    return Path.home() / '.local' / 'share' / 'nvim' / 'lazy' / 'KoalaVim'
 
 
 def config_dir() -> Path:
