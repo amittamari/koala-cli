@@ -7,7 +7,7 @@ from rich.console import Console
 from rich.style import Style
 from typing_extensions import Annotated
 
-from koala_cli.lockfile import kvim_lockfile, user_lockfile, _overwrite_lock_file
+from koala_cli.lockfile import kvim_lockfile, user_lockfile, _overwrite_lock_file, _lazy_restore
 from koala_cli.utils import data_dir, kvim_repo
 
 import typer
@@ -46,12 +46,7 @@ def update(
     backup_current_lockfile()
     console.print("Overwriting lockfile", style=Style(color="green"))
     _overwrite_lock_file(kvim_lockfile(), user_lockfile(), yes=True)
-
-    console.print("")
-    console.print(
-        " >> Run `:Lazy restore` in order to sync plugins to the lock file",
-        style=Style(color="bright_yellow", bold=True),
-    )
+    return _lazy_restore()
 
 
 def backup_current_lockfile():

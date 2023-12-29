@@ -1,3 +1,5 @@
+import subprocess
+
 import typer
 import json
 from typing_extensions import Annotated
@@ -46,13 +48,7 @@ def overwrite(yes: Yes = False):
     Overwrite user lock-file with Koala's lockfile
     """
     _overwrite_lock_file(kvim_lockfile(), user_lockfile(), yes)
-
-    console = Console()
-    console.print("")
-    console.print(
-        " >> Run `:Lazy restore` in order to sync plugins to the lock file",
-        style=Style(color="bright_yellow", bold=True),
-    )
+    return _lazy_restore()
 
 
 @app.command()
@@ -115,3 +111,42 @@ def read_lockfile(path: Path) -> dict:
             plugin_to_commit[plugin] = info['commit']
 
         return plugin_to_commit
+
+
+def _lazy_restore() -> typer.Exit:
+    console = Console()
+    console.print("")
+    console.print(
+        " >> Running `:Lazy restore` (sync plugin versions according to user's lockfile)",
+        style=Style(color="bright_yellow", bold=True),
+    )
+
+    process = subprocess.Popen(
+        ["nvim", "--headless", "+LazyRestoreLogged", "+qa"],
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+    )
+
+    console.print(
+        "...",
+        style=Style(color="light_salmon3"),
+    )
+    _, err = process.communicate()
+
+    if err != b"":
+        res = json.loads(err)
+        console.print(
+            f"Failed to run `:Lazy restore`!",
+            style=Style(color="bright_red", bold=True),
+        )
+        console.print("")
+        for plugin, error in res["plugins"].items():
+            console.print(plugin, style=Style(bold=True, underline=True))
+            console.print(f"Error: {error}\n")
+
+        return typer.Exit(1)
+
+    console.print(
+        " >> Finished successfully. Restart nvim to take effect",
+        style=Style(color="bright_green", bold=True),
+    )
