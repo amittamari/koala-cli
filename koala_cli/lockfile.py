@@ -136,6 +136,17 @@ def _lazy_restore() -> typer.Exit:
     try:
         res = json.loads(err)
 
+    except json.JSONDecodeError as e:
+        console.print(
+            f"Failed to decode restore output!",
+            style=Style(color="bright_red", bold=True),
+        )
+        console.print(f"Output: {err.decode()}\n")
+        console.print(f"Exception: {e}")
+
+        return typer.Exit(1)
+
+    try:
         if res["plugins"]:
             console.print(
                 f"`:Lazy restore` finished with errors!",
@@ -153,16 +164,11 @@ def _lazy_restore() -> typer.Exit:
             style=Style(color="bright_green", bold=True),
         )
 
-    except json.JSONDecodeError as e:
-        console.print(
-            f"Failed to decode restore output!",
-            style=Style(color="bright_red", bold=True),
-        )
-        console.print(f"Output: {err.decode()}\n")
-        console.print(f"Exception: {e}")
     except KeyError as e:
         console.print(
             "Failed to analyze restore result!\n",
             style=Style(color="bright_red", bold=True),
         )
         console.print(f"Key {e} doesn't exist in {res}")
+
+        return typer.Exit(1)
