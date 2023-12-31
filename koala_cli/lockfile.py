@@ -132,21 +132,37 @@ def _lazy_restore() -> typer.Exit:
         style=Style(color="light_salmon3"),
     )
     _, err = process.communicate()
-    res = json.loads(err)
 
-    if res["plugins"]:
+    try:
+        res = json.loads(err)
+
+        if res["plugins"]:
+            console.print(
+                f"`:Lazy restore` finished with errors!",
+                style=Style(color="bright_red", bold=True),
+            )
+            console.print("")
+            for plugin, error in res["plugins"].items():
+                console.print(plugin, style=Style(bold=True, underline=True))
+                console.print(f"Error: {error}\n")
+
+            return typer.Exit(1)
+
         console.print(
-            f"Failed to run `:Lazy restore`!",
+            " >> Finished successfully. Restart nvim to take effect",
+            style=Style(color="bright_green", bold=True),
+        )
+
+    except json.JSONDecodeError as e:
+        console.print(
+            f"Failed to decode restore output!",
             style=Style(color="bright_red", bold=True),
         )
-        console.print("")
-        for plugin, error in res["plugins"].items():
-            console.print(plugin, style=Style(bold=True, underline=True))
-            console.print(f"Error: {error}\n")
-
-        return typer.Exit(1)
-
-    console.print(
-        " >> Finished successfully. Restart nvim to take effect",
-        style=Style(color="bright_green", bold=True),
-    )
+        console.print(f"Output: {err.decode()}\n")
+        console.print(f"Exception: {e}")
+    except KeyError as e:
+        console.print(
+            "Failed to analyze restore result!\n",
+            style=Style(color="bright_red", bold=True),
+        )
+        console.print(f"Key {e} doesn't exist in {res}")
