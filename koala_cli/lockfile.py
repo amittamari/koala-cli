@@ -132,9 +132,9 @@ def _lazy_restore() -> typer.Exit:
         style=Style(color="light_salmon3"),
     )
     _, err = process.communicate()
+    res = json.loads(err)
 
-    if err != b"":
-        res = json.loads(err)
+    if res["plugins"]:
         console.print(
             f"Failed to run `:Lazy restore`!",
             style=Style(color="bright_red", bold=True),
