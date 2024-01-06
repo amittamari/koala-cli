@@ -4,10 +4,12 @@ import re
 import subprocess
 
 USAGE_START = "## Usage\n"
+PROMPT = "> koala --help"
+
 
 def remove_term_codes(line: str) -> str:
-    ansi_escape = re.compile(r'\x1B(?:[@-Z\\-_]|\[[0-?]*[ -/]*[@-~])')
-    return ansi_escape.sub('', line)
+    ansi_escape = re.compile(r"\x1B(?:[@-Z\\-_]|\[[0-?]*[ -/]*[@-~])")
+    return ansi_escape.sub("", line)
 
 
 def replace_usage(readme_lines: list[str], help_output_lines: list[str]) -> list[str]:
@@ -20,6 +22,8 @@ def replace_usage(readme_lines: list[str], help_output_lines: list[str]) -> list
 
     before_content = readme_lines[:content_start]
     after_content = readme_lines[content_end:]
+
+    help_output_lines.insert(0, PROMPT)
 
     help_output_lines.insert(0, "```")
     help_output_lines.append("```")
