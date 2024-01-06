@@ -1,11 +1,16 @@
 #!/usr/bin/env python3
 
+import re
 import subprocess
 
 USAGE_START = "## Usage\n"
 
+def remove_term_codes(line: str) -> str:
+    ansi_escape = re.compile(r'\x1B(?:[@-Z\\-_]|\[[0-?]*[ -/]*[@-~])')
+    return ansi_escape.sub('', line)
 
-def replace_usage(readme_lines, help_output_lines):
+
+def replace_usage(readme_lines: list[str], help_output_lines: list[str]) -> list[str]:
     content_start = readme_lines.index(USAGE_START) + 1
 
     for i in range(content_start, len(readme_lines)):
@@ -19,7 +24,7 @@ def replace_usage(readme_lines, help_output_lines):
     help_output_lines.insert(0, "```")
     help_output_lines.append("```")
 
-    help_output_lines = [line + "\n" for line in help_output_lines]
+    help_output_lines = [remove_term_codes(line) + "\n" for line in help_output_lines]
 
     return before_content + help_output_lines + after_content
 
