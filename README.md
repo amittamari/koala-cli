@@ -10,6 +10,7 @@ python -m pip install git+ssh://git@github.com/KoalaVim/koala-cli.git
 
 ## Usage
 ```
+> koala --help
  Usage: koala [OPTIONS] COMMAND [ARGS]...                                       
                                                                                 
 CLI tool to manage KoalaVim
